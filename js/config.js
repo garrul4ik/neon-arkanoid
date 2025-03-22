@@ -54,18 +54,25 @@ export const CONFIG = {
 
     // Настройки частиц
     PARTICLES: {
-        MAX_PARTICLES: 100,
-        LIFETIME: 1000,
-        MIN_SPEED: 50,
-        MAX_SPEED: 200,
-        MIN_SIZE: 2,
-        MAX_SIZE: 6
+        MAX_PARTICLES: 50,
+        LIFETIME: 500,
+        MIN_SPEED: 25,
+        MAX_SPEED: 100,
+        MIN_SIZE: 1,
+        MAX_SIZE: 3
     },
 
     // Настройки звука
     AUDIO: {
         MUSIC_VOLUME: 0.5,
         SFX_VOLUME: 0.7
+    },
+
+    // Настройки бонусов
+    POWERUPS: {
+        DROP_CHANCE: 0.3, // 30% шанс выпадения бонуса из блока
+        TYPES: ['BALL_SPLIT', 'PADDLE_SHRINK', 'PADDLE_EXTEND', 'BALL_SPEED'],
+        FALL_SPEED: 150
     },
 
     // Уровни

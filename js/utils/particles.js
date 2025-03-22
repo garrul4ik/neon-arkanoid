@@ -2,37 +2,37 @@ import { CONFIG } from '../config.js';
 
 export const ParticleEffects = {
     EXPLOSION: {
-        particleCount: 30,
-        minSpeed: 100,
-        maxSpeed: 300,
-        minSize: 2,
-        maxSize: 6,
-        lifetime: 1000
-    },
-    SPARKLE: {
-        particleCount: 10,
+        particleCount: 15,
         minSpeed: 50,
         maxSpeed: 150,
         minSize: 1,
         maxSize: 3,
         lifetime: 500
     },
+    SPARKLE: {
+        particleCount: 5,
+        minSpeed: 25,
+        maxSpeed: 75,
+        minSize: 0.5,
+        maxSize: 1.5,
+        lifetime: 250
+    },
     TRAIL: {
         particleCount: 1,
-        particleLifetime: 0.3,
+        particleLifetime: 0.15,
         particleSpeed: { min: 0, max: 0 },
-        particleSize: { min: 2, max: 3 },
+        particleSize: { min: 1, max: 1.5 },
         spread: 0,
         gravity: 0,
         fadeOut: true
     },
     HIT: {
-        particleCount: 5,
-        minSpeed: 50,
-        maxSpeed: 100,
-        minSize: 1,
-        maxSize: 2,
-        lifetime: 300
+        particleCount: 3,
+        minSpeed: 25,
+        maxSpeed: 50,
+        minSize: 0.5,
+        maxSize: 1,
+        lifetime: 150
     }
 };
 

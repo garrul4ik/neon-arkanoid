@@ -33,6 +33,8 @@
     box-shadow: 
         0 0 30px rgba(0, 255, 178, 0.3),
         0 0 60px rgba(138, 87, 240, 0.2);
+    --cursor-x: 0px;
+    --cursor-y: 0px;
 }
 
 /* Game Controls */
@@ -96,6 +98,7 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(135deg, #0A0A12, #131326);
+    cursor: none; /* Скрываем стандартный курсор */
 }
 
 /* Game Messages */
@@ -163,6 +166,7 @@
     width: 100%;
     height: 100%;
     z-index: 1;
+    cursor: none; /* Скрываем стандартный курсор */
 }
 
 /* Фоновые эффекты */
@@ -367,32 +371,54 @@
 
 .pause-buttons {
     display: flex;
-    gap: 10px;
-    margin-top: 20px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.pause-buttons .btn {
+    width: 100%;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    text-align: center;
+    border: 2px solid var(--primary);
+    background: rgba(0, 0, 0, 0.7);
+    color: var(--light);
+    transition: all 0.3s ease;
 }
 
 #exitGame {
-    background: #ff3366;
+    background: linear-gradient(45deg, var(--accent-dark), var(--accent));
+    border-color: var(--accent-light);
 }
 
 #exitGame:hover {
-    background: #ff1a1a;
+    background: linear-gradient(45deg, var(--accent), var(--accent-light));
+    transform: scale(1.05);
 }
 
 #exitToMenu {
-    background: #ff3366;
+    background: linear-gradient(45deg, var(--accent-dark), var(--accent));
+    border-color: var(--accent-light);
 }
 
 #exitToMenu:hover {
-    background: #ff1a1a;
+    background: linear-gradient(45deg, var(--accent), var(--accent-light));
+    transform: scale(1.05);
 }
 
 #resumeGame {
-    background: #00cc66;
+    background: linear-gradient(45deg, var(--primary-dark), var(--primary));
+    border-color: var(--primary-light);
 }
 
 #resumeGame:hover {
-    background: #00ff80;
+    background: linear-gradient(45deg, var(--primary), var(--primary-light));
+    transform: scale(1.05);
 }
 
 .btn {
@@ -451,105 +477,28 @@
         inset 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Стили для кнопок в меню паузы */
-.pause-buttons {
-    display: flex;
-    gap: 20px;
-    margin-top: 30px;
-}
-
-.pause-buttons .btn {
-    min-width: 200px;
-    padding: 15px 30px;
-    font-size: 1.2rem;
-}
-
-/* Специальные стили для разных типов кнопок */
-#exitGame, #exitToMenu {
-    background: linear-gradient(to bottom, #ff3366, #ff1a1a);
-    border-color: rgba(255, 51, 102, 0.3);
-    box-shadow: 
-        0 0 10px rgba(255, 51, 102, 0.3),
-        0 0 20px rgba(255, 51, 102, 0.2),
-        inset 0 0 15px rgba(255, 51, 102, 0.2);
-}
-
-#exitGame:hover, #exitToMenu:hover {
-    background: linear-gradient(to bottom, #ff4d80, #ff3333);
-    box-shadow: 
-        0 0 15px rgba(255, 51, 102, 0.4),
-        0 0 30px rgba(255, 51, 102, 0.3),
-        inset 0 0 20px rgba(255, 51, 102, 0.3);
-}
-
-#resumeGame {
-    background: linear-gradient(to bottom, #00cc66, #00994d);
-    border-color: rgba(0, 204, 102, 0.3);
-    box-shadow: 
-        0 0 10px rgba(0, 204, 102, 0.3),
-        0 0 20px rgba(0, 204, 102, 0.2),
-        inset 0 0 15px rgba(0, 204, 102, 0.2);
-}
-
-#resumeGame:hover {
-    background: linear-gradient(to bottom, #00e673, #00b359);
-    box-shadow: 
-        0 0 15px rgba(0, 204, 102, 0.4),
-        0 0 30px rgba(0, 204, 102, 0.3),
-        inset 0 0 20px rgba(0, 204, 102, 0.3);
-}
-
-#startGame {
-    background: linear-gradient(to bottom, #3366ff, #0044cc);
-    border-color: rgba(51, 102, 255, 0.3);
-    box-shadow: 
-        0 0 10px rgba(51, 102, 255, 0.3),
-        0 0 20px rgba(51, 102, 255, 0.2),
-        inset 0 0 15px rgba(51, 102, 255, 0.2);
-}
-
-#startGame:hover {
-    background: linear-gradient(to bottom, #4d7fff, #0055ff);
-    box-shadow: 
-        0 0 15px rgba(51, 102, 255, 0.4),
-        0 0 30px rgba(51, 102, 255, 0.3),
-        inset 0 0 20px rgba(51, 102, 255, 0.3);
-}
-
-/* Адаптивные стили для кнопок */
+/* Медиа-запросы для адаптивности */
 @media (max-width: 768px) {
-    .btn {
-        padding: 10px 20px;
-        font-size: 1rem;
-        min-width: 120px;
-    }
-
     .pause-buttons {
+        max-width: 250px;
         gap: 15px;
-        margin-top: 20px;
     }
 
     .pause-buttons .btn {
-        min-width: 150px;
-        padding: 12px 24px;
-        font-size: 1.1rem;
+        padding: 12px 25px;
+        font-size: 1rem;
     }
 }
 
 @media (max-width: 480px) {
-    .btn {
-        padding: 8px 16px;
-        font-size: 0.9rem;
-        min-width: 100px;
-    }
-
     .pause-buttons {
-        flex-direction: column;
+        max-width: 200px;
         gap: 10px;
     }
 
     .pause-buttons .btn {
-        min-width: 200px;
+        padding: 10px 20px;
+        font-size: 0.9rem;
     }
 }
 
@@ -564,6 +513,12 @@
     width: 100%;
     max-width: 300px;
     padding: 0 20px;
+    transition: top 0.5s ease-in-out;
+}
+
+/* Перемещаем логотип вниз при показе сообщения об окончании игры */
+.game-message#gameOverMessage.show ~ .studio-logo {
+    top: calc(100vh - 120px);
 }
 
 .studio-logo img {
@@ -617,53 +572,88 @@
     }
 }
 
-/* Адаптивные стили для логотипа */
+/* Адаптивные стили для логотипа при окончании игры */
 @media (max-width: 1024px) {
-    .studio-logo {
-        top: 15px;
-        max-width: 250px;
-    }
-    
-    .studio-name {
-        font-size: 1.75rem;
-        margin-top: 8px;
+    .game-message#gameOverMessage.show ~ .studio-logo {
+        top: calc(100vh - 100px);
     }
 }
 
 @media (max-width: 768px) {
-    .studio-logo {
-        top: 10px;
-        max-width: 200px;
-    }
-    
-    .studio-name {
-        font-size: 1.5rem;
-        margin-top: 6px;
+    .game-message#gameOverMessage.show ~ .studio-logo {
+        top: calc(100vh - 80px);
     }
 }
 
 @media (max-width: 480px) {
-    .studio-logo {
-        top: 5px;
-        max-width: 150px;
-    }
-    
-    .studio-name {
-        font-size: 1.25rem;
-        margin-top: 4px;
-        letter-spacing: 2px;
+    .game-message#gameOverMessage.show ~ .studio-logo {
+        top: calc(100vh - 60px);
     }
 }
 
 @media (max-height: 600px) {
-    .studio-logo {
-        top: 5px;
-        max-width: 120px;
+    .game-message#gameOverMessage.show ~ .studio-logo {
+        top: calc(100vh - 50px);
     }
-    
-    .studio-name {
-        font-size: 1rem;
-        margin-top: 3px;
-        letter-spacing: 1px;
+}
+
+/* Создаем псевдоэлемент для курсора */
+.game-wrapper::after {
+    content: '';
+    position: fixed;
+    width: 16px; /* Размер как у игрового шарика */
+    height: 16px;
+    background: radial-gradient(
+        circle at center,
+        #ff3366,
+        #ff0044
+    );
+    border-radius: 50%;
+    pointer-events: none;
+    left: var(--cursor-x);
+    top: var(--cursor-y);
+    transform: translate(-50%, -50%);
+    box-shadow: 
+        0 0 10px rgba(255, 51, 102, 0.6),
+        0 0 20px rgba(255, 51, 102, 0.4),
+        0 0 30px rgba(255, 51, 102, 0.2);
+    z-index: 1500;
+    opacity: 0;
+    transition: opacity 0.3s;
+    mix-blend-mode: screen;
+}
+
+/* Показываем курсор только когда игра активна */
+.game-container.active .game-wrapper::after {
+    opacity: 1;
+}
+
+/* Добавляем анимацию пульсации для курсора */
+@keyframes cursorPulse {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow: 
+            0 0 10px rgba(255, 51, 102, 0.6),
+            0 0 20px rgba(255, 51, 102, 0.4),
+            0 0 30px rgba(255, 51, 102, 0.2);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        box-shadow: 
+            0 0 15px rgba(255, 51, 102, 0.7),
+            0 0 30px rgba(255, 51, 102, 0.5),
+            0 0 45px rgba(255, 51, 102, 0.3);
+    }
+}
+
+.game-container.active .game-wrapper::after {
+    opacity: 1;
+    animation: cursorPulse 2s ease-in-out infinite;
+}
+
+/* Скрываем курсор на мобильных устройствах */
+@media (hover: none) and (pointer: coarse) {
+    .game-wrapper::after {
+        display: none;
     }
 } 

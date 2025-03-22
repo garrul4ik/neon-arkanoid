@@ -1,5 +1,6 @@
 import { checkCollision } from '../utils/collision.js';
 import { ParticleEffects } from '../utils/particles.js';
+import { PowerUp, PowerUpType } from '../powerups/PowerUp.js';
 
 export class Block {
     constructor(game, x, y, width, height, type = 'normal') {
@@ -218,5 +219,17 @@ export class Block {
             particleColor: this.getColor()
         });
         setTimeout(() => this.game.particles.removeEmitter(emitter), 1000);
+
+        // Шанс выпадения бонуса
+        if (Math.random() < CONFIG.POWERUPS.DROP_CHANCE && this.type !== 'unbreakable') {
+            const randomType = CONFIG.POWERUPS.TYPES[Math.floor(Math.random() * CONFIG.POWERUPS.TYPES.length)];
+            const powerUp = new PowerUp(
+                this.game,
+                this.x + this.width / 2 - 10, // Центрируем бонус
+                this.y + this.height / 2 - 10,
+                randomType
+            );
+            this.game.powerUps.push(powerUp);
+        }
     }
 } 
