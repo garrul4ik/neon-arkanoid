@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sound Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+        }
+        .sound-group {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .record-button {
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .record-button.recording {
+            background-color: #aa0000;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sound Generator</h1>
+    
+    <div class="sound-group">
+        <h2>Collision Sounds</h2>
+        <button onclick="generatePaddleSound()">Generate Paddle Sound</button>
+        <button onclick="generateWallSound()">Generate Wall Sound</button>
+        <button onclick="generateBlockHitSound()">Generate Block Hit Sound</button>
+        <button onclick="generateBlockBreakSound()">Generate Block Break Sound</button>
+    </div>
+
+    <div class="sound-group">
+        <h2>Game Event Sounds</h2>
+        <button onclick="generateGameStartSound()">Generate Game Start Sound</button>
+        <button onclick="generateGameOverSound()">Generate Game Over Sound</button>
+        <button onclick="generateLevelCompleteSound()">Generate Level Complete Sound</button>
+        <button onclick="generateLifeLostSound()">Generate Life Lost Sound</button>
+        <button onclick="generatePowerUpSound()">Generate Power Up Sound</button>
+    </div>
+
+    <div class="sound-group">
+        <h2>Background Music</h2>
+        <button onclick="generateBackgroundMusic()">Generate Background Music</button>
+    </div>
+
+    <div class="sound-group">
+        <h2>Recording</h2>
+        <button id="recordButton" class="record-button" onclick="toggleRecording()">Start Recording</button>
+        <button onclick="downloadRecording()" disabled id="downloadButton">Download Recording</button>
+        <p id="recordingStatus"></p>
+    </div>
+
+    <script>
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+        let recordButton = document.getElementById('recordButton');
+        let downloadButton = document.getElementById('downloadButton');
+        let statusElement = document.getElementById('recordingStatus');
+
+        async function setupRecording() {
+            const dest = audioContext.createMediaStreamDestination();
+            mediaRecorder = new MediaRecorder(dest.stream);
+            
+            mediaRecorder.ondataavailable = (e) => {
+                audioChunks.push(e.data);
+            };
+            
+            mediaRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                downloadButton.disabled = false;
+                window.recordedAudio = audioBlob;
+            };
+
+            return dest;
+        }
+
+        async function toggleRecording() {
+            if (!isRecording) {
+                audioChunks = [];
+                downloadButton.disabled = true;
+                recordButton.textContent = 'Stop Recording';
+                recordButton.classList.add('recording');
+                statusElement.textContent = 'Recording...';
+                isRecording = true;
+                await setupRecording();
+                mediaRecorder.start();
+            } else {
+                recordButton.textContent = 'Start Recording';
+                recordButton.classList.remove('recording');
+                statusElement.textContent = 'Recording stopped';
+                isRecording = false;
+                mediaRecorder.stop();
+            }
+        }
+
+        function downloadRecording() {
+            const url = URL.createObjectURL(window.recordedAudio);
+            const a = document.createElement('a');
+            document.body.appendChild(a);
+            a.style = 'display: none';
+            a.href = url;
+            a.download = 'sound.wav';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function createOscillator(type, frequency, startTime, duration) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.type = type;
+            oscillator.frequency.setValueAtTime(frequency, startTime);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            if (isRecording) {
+                const dest = audioContext.createMediaStreamDestination();
+                gainNode.connect(dest);
+            }
+            
+            gainNode.gain.setValueAtTime(0.5, startTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+            
+            oscillator.start(startTime);
+            oscillator.stop(startTime + duration);
+            
+            return { oscillator, gainNode };
+        }
+
+        function generatePaddleSound() {
+            const startTime = audioContext.currentTime;
+            createOscillator('sine', 400, startTime, 0.1);
+            createOscillator('sine', 600, startTime, 0.05);
+        }
+
+        function generateWallSound() {
+            const startTime = audioContext.currentTime;
+            createOscillator('sine', 300, startTime, 0.1);
+            createOscillator('sine', 450, startTime, 0.05);
+        }
+
+        function generateBlockHitSound() {
+            const startTime = audioContext.currentTime;
+            createOscillator('square', 500, startTime, 0.1);
+            createOscillator('sine', 750, startTime, 0.05);
+        }
+
+        function generateBlockBreakSound() {
+            const startTime = audioContext.currentTime;
+            createOscillator('square', 600, startTime, 0.15);
+            createOscillator('sine', 900, startTime, 0.1);
+            setTimeout(() => {
+                createOscillator('sine', 1200, audioContext.currentTime, 0.1);
+            }, 50);
+        }
+
+        function generateGameStartSound() {
+            const startTime = audioContext.currentTime;
+            [400, 600, 800, 1000].forEach((freq, i) => {
+                setTimeout(() => {
+                    createOscillator('sine', freq, audioContext.currentTime, 0.2);
+                }, i * 100);
+            });
+        }
+
+        function generateGameOverSound() {
+            const startTime = audioContext.currentTime;
+            [800, 600, 400, 200].forEach((freq, i) => {
+                setTimeout(() => {
+                    createOscillator('sine', freq, audioContext.currentTime, 0.3);
+                }, i * 200);
+            });
+        }
+
+        function generateLevelCompleteSound() {
+            const startTime = audioContext.currentTime;
+            [400, 600, 800, 1000, 1200].forEach((freq, i) => {
+                setTimeout(() => {
+                    createOscillator('sine', freq, audioContext.currentTime, 0.15);
+                }, i * 100);
+            });
+        }
+
+        function generateLifeLostSound() {
+            const startTime = audioContext.currentTime;
+            [600, 400, 200].forEach((freq, i) => {
+                setTimeout(() => {
+                    createOscillator('sine', freq, audioContext.currentTime, 0.2);
+                }, i * 100);
+            });
+        }
+
+        function generatePowerUpSound() {
+            const startTime = audioContext.currentTime;
+            [600, 800, 1000].forEach((freq, i) => {
+                setTimeout(() => {
+                    createOscillator('sine', freq, audioContext.currentTime, 0.1);
+                }, i * 50);
+            });
+        }
+
+        function generateBackgroundMusic() {
+            const startTime = audioContext.currentTime;
+            const duration = 4;
+            const notes = [
+                { freq: 400, time: 0 },
+                { freq: 500, time: 0.5 },
+                { freq: 600, time: 1 },
+                { freq: 500, time: 1.5 },
+                { freq: 400, time: 2 },
+                { freq: 500, time: 2.5 },
+                { freq: 600, time: 3 },
+                { freq: 500, time: 3.5 }
+            ];
+
+            notes.forEach(note => {
+                createOscillator('sine', note.freq, startTime + note.time, 0.4);
+            });
+        }
+    </script>
+</body>
+</html> 

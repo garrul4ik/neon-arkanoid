@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Неоновый Арканоид</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components/game.css">
+    <link rel="stylesheet" href="css/components/animations.css">
+</head>
+<body>
+    <!-- Логотип студии -->
+    <div class="studio-logo">
+        <img src="assets/images/mrg-studio-logo.png" alt="MrG Studio">
+        <div class="studio-name">MrG Studio</div>
+    </div>
+
+    <!-- Визуальные эффекты -->
+    <div class="noise"></div>
+    <div class="grid"></div>
+    <div class="scanline"></div>
+    <div class="particles"></div>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <h1 class="main-title">Неоновый Арканоид</h1>
+        <div class="message">
+            <p>Нажмите пробел или кликните мышью, чтобы начать</p>
+            <p>Используйте стрелки или мышь для управления платформой</p>
+        </div>
+        
+        <div class="buttons">
+            <button class="btn" id="startGame">Начать игру</button>
+            <button class="btn" id="toggleMusic">Музыка: Вкл</button>
+            <button class="btn" id="toggleSound">Звуки: Вкл</button>
+            <button class="btn" id="showHighScores">Рекорды</button>
+        </div>
+
+        <!-- Игровой контейнер -->
+        <div class="game-container">
+            <div class="game-wrapper">
+                <div class="game-controls-bar">
+                    <div class="left-controls">
+                        <div class="game-score">Счёт: <span class="score-value">0</span></div>
+                    </div>
+                    <div class="center-controls">
+                        <button class="btn" id="pauseGame">Пауза</button>
+                        <button class="btn" id="exitGame">Выход</button>
+                    </div>
+                    <div class="right-controls">
+                        <div class="game-lives">Жизни: <span class="lives-value">3</span></div>
+                    </div>
+                </div>
+                <canvas id="gameCanvas"></canvas>
+            </div>
+
+            <!-- Игровые сообщения -->
+            <div class="game-message" id="pauseMessage">
+                <h2 class="message-title">Пауза</h2>
+                <p>Нажмите P или кнопку паузы для продолжения</p>
+                <div class="pause-buttons">
+                    <button class="btn" id="resumeGame">Продолжить</button>
+                    <button class="btn" id="exitToMenu">В главное меню</button>
+                </div>
+            </div>
+            <div class="game-message" id="gameOverMessage">
+                <h2 class="message-title">Игра окончена</h2>
+                <p>Ваш счёт: <span class="final-score">0</span></p>
+                <button class="btn" id="restartGame">Начать заново</button>
+            </div>
+            <div class="game-message" id="levelCompleteMessage">
+                <h2 class="message-title">Уровень пройден!</h2>
+                <p>Нажмите пробел для продолжения</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Скрипты -->
+    <script type="module">
+        import { Game } from './js/core/Game.js';
+        import { AudioManager } from './js/core/Audio.js';
+
+        // Инициализация игры при загрузке страницы
+        let game;
+        
+        window.addEventListener('load', async () => {
+            try {
+                game = new Game();
+                await game.init();
+
+                // Обработчики кнопок
+                document.getElementById('startGame').addEventListener('click', () => {
+                    game.start();
+                    game.audioManager.playMusic('background');
+                });
+
+                document.getElementById('pauseGame').addEventListener('click', () => {
+                    game.togglePause();
+                });
+
+                document.getElementById('restartGame').addEventListener('click', () => {
+                    game.restart();
+                    game.audioManager.playMusic('background');
+                });
+
+                document.getElementById('toggleMusic').addEventListener('click', (e) => {
+                    const isEnabled = game.audioManager.toggleMusic();
+                    e.target.textContent = `Музыка: ${isEnabled ? 'Вкл' : 'Выкл'}`;
+                });
+
+                document.getElementById('toggleSound').addEventListener('click', (e) => {
+                    const isEnabled = game.audioManager.toggleSFX();
+                    e.target.textContent = `Звуки: ${isEnabled ? 'Вкл' : 'Выкл'}`;
+                });
+
+                document.getElementById('showHighScores').addEventListener('click', () => {
+                    game.showHighScores();
+                });
+
+                // Обработка клавиатуры
+                window.addEventListener('keydown', (e) => {
+                    if (e.repeat) return; // Игнорируем удержание клавиш
+                    
+                    switch(e.code) {
+                        case 'Space':
+                            if (!game.gameActive) {
+                                game.start();
+                                game.audioManager.playMusic('background');
+                            } else {
+                                game.launchBall();
+                            }
+                            break;
+                        case 'KeyP':
+                            game.togglePause();
+                            break;
+                        case 'KeyM':
+                            document.getElementById('toggleMusic').click();
+                            break;
+                        case 'KeyS':
+                            document.getElementById('toggleSound').click();
+                            break;
+                    }
+                });
+
+                // Пасхалка - Konami Code
+                let konamiCode = [];
+                const correctCode = [
+                    'ArrowUp', 'ArrowUp',
+                    'ArrowDown', 'ArrowDown',
+                    'ArrowLeft', 'ArrowRight',
+                    'ArrowLeft', 'ArrowRight',
+                    'KeyB', 'KeyA'
+                ];
+
+                window.addEventListener('keydown', (e) => {
+                    konamiCode.push(e.code);
+                    if (konamiCode.length > correctCode.length) {
+                        konamiCode.shift();
+                    }
+                    
+                    if (konamiCode.join(',') === correctCode.join(',')) {
+                        game.activateCheatMode();
+                        konamiCode = [];
+                    }
+                });
+            } catch (error) {
+                console.error('Ошибка инициализации игры:', error);
+                
+                // Создаем красивое сообщение об ошибке
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'game-message error-message show';
+                errorMessage.innerHTML = `
+                    <h2 class="message-title">Ошибка</h2>
+                    <p style="white-space: pre-line">${error.message}</p>
+                    <button class="btn" onclick="location.reload()">Попробовать снова</button>
+                `;
+                
+                // Добавляем сообщение на страницу
+                const container = document.querySelector('.game-container');
+                if (container) {
+                    container.appendChild(errorMessage);
+                } else {
+                    document.body.appendChild(errorMessage);
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

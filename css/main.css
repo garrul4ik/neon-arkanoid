@@ -1,0 +1,393 @@
+/* Основные стили */
+:root {
+    --primary: #00ffa2;
+    --accent: #8a57f0;
+    --light: #ffffff;
+    --dark: #0a0a12;
+    --blue: #3366ff;
+    --primary-color: #87CEEB;
+    --secondary-color: #5F9EA0;
+    --background-color: #0A0A12;
+    --text-color: #FFFFFF;
+    --shadow-color: rgba(135, 206, 235, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Orbitron', sans-serif;
+}
+
+body {
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    background: var(--dark);
+    color: var(--light);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+.main-title {
+    font-size: 4rem;
+    font-weight: 900;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    text-shadow: 
+        0 0 10px var(--primary),
+        0 0 20px var(--primary),
+        0 0 40px var(--accent);
+    animation: neonPulse 2s infinite;
+}
+
+.message {
+    font-size: 1.2rem;
+    margin-bottom: 3rem;
+    line-height: 1.6;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.buttons {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.btn {
+    min-width: 250px;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: linear-gradient(45deg, var(--primary), var(--accent));
+    color: var(--light);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 0 20px rgba(0, 255, 162, 0.3),
+        0 0 40px rgba(138, 87, 240, 0.2),
+        inset 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transition: 0.6s;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+        0 0 30px rgba(0, 255, 162, 0.4),
+        0 0 60px rgba(138, 87, 240, 0.3),
+        inset 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+#startGame {
+    background: linear-gradient(45deg, #00ffa2, #00d4ff);
+}
+
+#toggleMusic {
+    background: linear-gradient(45deg, #8a57f0, #ff47c7);
+}
+
+#toggleSound {
+    background: linear-gradient(45deg, #ff47c7, #8a57f0);
+}
+
+#showHighScores {
+    background: linear-gradient(45deg, #00d4ff, #00ffa2);
+}
+
+@keyframes neonPulse {
+    0%, 100% {
+        text-shadow: 
+            0 0 10px var(--primary),
+            0 0 20px var(--primary),
+            0 0 40px var(--accent);
+    }
+    50% {
+        text-shadow: 
+            0 0 20px var(--primary),
+            0 0 40px var(--primary),
+            0 0 80px var(--accent);
+    }
+}
+
+/* Адаптивные стили */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 3rem;
+    }
+
+    .message {
+        font-size: 1rem;
+    }
+
+    .btn {
+        min-width: 200px;
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-title {
+        font-size: 2rem;
+    }
+
+    .buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .btn {
+        width: 100%;
+        min-width: unset;
+    }
+}
+
+/* Контейнер игры */
+.game-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    border: 2px solid var(--primary-color);
+    border-radius: 10px;
+    box-shadow: 0 0 20px var(--shadow-color);
+    overflow: hidden;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.game-container.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Интерфейс */
+.ui-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+}
+
+.score-container, .lives-container {
+    background: rgba(10, 10, 18, 0.8);
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 0 10px var(--shadow-color);
+}
+
+.score-label, .lives-label {
+    font-size: 14px;
+    color: var(--primary-color);
+    margin-right: 5px;
+}
+
+.score-value, .lives-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+/* Кнопки */
+.button {
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 20px;
+    padding: 10px 30px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 0 10px var(--shadow-color);
+}
+
+.button:hover {
+    background: var(--primary-color);
+    color: var(--background-color);
+    box-shadow: 0 0 20px var(--shadow-color);
+    transform: scale(1.05);
+}
+
+.button:active {
+    transform: scale(0.95);
+}
+
+.button.sound-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Сообщения */
+.message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: rgba(10, 10, 18, 0.9);
+    padding: 30px 50px;
+    border-radius: 20px;
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 0 30px var(--shadow-color);
+    text-align: center;
+    opacity: 0;
+    transition: all 0.5s ease;
+    z-index: 100;
+}
+
+.message.show {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+.message h2 {
+    color: var(--primary-color);
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.message p {
+    color: var(--text-color);
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+/* Эффекты */
+.glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: radial-gradient(
+        circle at 50% 50%,
+        var(--shadow-color) 0%,
+        transparent 70%
+    );
+    opacity: 0.5;
+    mix-blend-mode: screen;
+}
+
+/* Анимации */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+
+/* Адаптивность */
+@media (max-width: 840px) {
+    .game-container {
+        width: 100%;
+        height: calc(100vh - 40px);
+        margin: 20px;
+        border-radius: 0;
+    }
+
+    .button {
+        font-size: 14px;
+        padding: 8px 20px;
+    }
+
+    .score-container, .lives-container {
+        padding: 8px 15px;
+    }
+
+    .score-label, .lives-label {
+        font-size: 12px;
+    }
+
+    .score-value, .lives-value {
+        font-size: 16px;
+    }
+}
+
+/* Чит-код сообщение */
+.cheat-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--accent-color);
+    color: var(--text-color);
+    padding: 20px 40px;
+    border-radius: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+    animation: fadeInOut 2s ease-in-out forwards;
+    z-index: 1000;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    10% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+    20% { transform: translate(-50%, -50%) scale(1); }
+    80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+} 

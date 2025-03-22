@@ -1,0 +1,33 @@
+{
+    "name": "neon-arkanoid",
+    "version": "1.0.0",
+    "description": "Современная реализация классической игры Арканоид с неоновой графикой",
+    "main": "index.html",
+    "scripts": {
+        "start": "serve",
+        "lint": "eslint js/**/*.js",
+        "lint:fix": "eslint js/**/*.js --fix"
+    },
+    "keywords": [
+        "game",
+        "arkanoid",
+        "breakout",
+        "canvas",
+        "html5",
+        "javascript"
+    ],
+    "author": "Neon Arkanoid Team",
+    "license": "MIT",
+    "devDependencies": {
+        "eslint": "^8.56.0",
+        "serve": "^14.2.1"
+    },
+    "engines": {
+        "node": ">=14.0.0"
+    },
+    "browserslist": [
+        "> 1%",
+        "last 2 versions",
+        "not dead"
+    ]
+} 
